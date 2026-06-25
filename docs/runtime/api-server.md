@@ -169,16 +169,17 @@ There are two ways to send queries via POST to your agent, via the `/run` or
 `/run_sse` routes.
 
 * `POST http://localhost:8000/run`: collects all events as a list and returns the
-  list all at once. Suitable for most users (if you are unsure, we recommend
-  using this one).
+  list all at once. Suitable for scripts, tests, and request/response backend
+  integrations.
 * `POST http://localhost:8000/run_sse`: returns as Server-Sent-Events, which is a
   stream of event objects. Suitable for those who want to be notified as soon as
   the event is available. With `/run_sse`, you can also set `streaming` to
   `true` to enable token-level streaming.
 
 If you are building a browser, mobile, desktop, or chat frontend on top of this
-stream, see [Frontend interfaces](/runtime/frontend-interfaces/) for the
-client-facing protocol and UI payload options.
+stream, start from `/run_sse` or an adapter protocol such as AG-UI. See
+[Frontend interfaces](/runtime/frontend-interfaces/) for the client-facing
+protocol and UI payload options.
 
 **Using `/run`**
 

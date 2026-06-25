@@ -15,7 +15,8 @@ tool provides a simple way to interactively develop and debug your agents.
     ADK Web for development and debugging purposes only.
 
     To build a product UI for users, see
-    [Frontend interfaces](/runtime/frontend-interfaces/).
+    [Frontend interfaces](/runtime/frontend-interfaces/). To inspect the raw
+    event stream first, see the API Server's `/run_sse` route.
 
 Key features of the ADK web interface include:
 

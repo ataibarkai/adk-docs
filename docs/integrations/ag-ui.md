@@ -4,16 +4,12 @@ catalog_description: Build interactive chat UIs with streaming, state sync, and 
 catalog_icon: /integrations/assets/ag-ui.png
 ---
 
-# AG-UI user interface for ADK
+# AG-UI protocol for ADK frontends
 
-<div class="language-support-tag">
-  <span class="lst-supported">Supported in ADK</span><span class="lst-python">Python</span><span class="lst-typescript">TypeScript</span><span class="lst-go">Go</span><span class="lst-java">Java</span>
-</div>
-
-Turn your ADK agents into full-featured applications with rich, responsive UIs.
+Connect your ADK agents to full-featured applications with rich, responsive UIs.
 [AG-UI](https://docs.ag-ui.com/) is an open protocol that handles streaming
-events, client state, and bi-directional communication between your agents and
-users.
+events, client state, and bidirectional communication between agents and
+application frontends.
 
 [AG-UI](https://github.com/ag-ui-protocol/ag-ui) provides a consistent interface
 to empower rich clients across technology stacks, from mobile to the web and
@@ -30,9 +26,6 @@ AG-UI:
   implementations](https://github.com/ag-ui-protocol/ag-ui/tree/main/apps/client-cli-example/src)
   in TypeScript
 
-This tutorial uses CopilotKit to create a sample app backed by an ADK agent that
-demonstrates some of the features supported by AG-UI.
-
 ## Where AG-UI fits
 
 ADK Runtime events are the source of truth for an agent run. AG-UI adapts those
@@ -41,14 +34,40 @@ AG-UI when your UI needs more than a single text response: streaming messages,
 tool-call rendering, shared state, frontend tools, human approvals, or
 generative UI.
 
+The layers are:
+
+```text
+ADK agent and Runtime events
+  -> ADK-to-AG-UI adapter
+  -> AG-UI client-facing event protocol
+  -> Client implementation, such as CopilotKit
+  -> Application UI
+```
+
 For a broader map of ADK frontend options, see
 [Frontend interfaces](/runtime/frontend-interfaces/). For the pattern-level
 breakdown, see [Frontend patterns](/runtime/frontend-interfaces/patterns/).
 
-## Quickstart
+## Adapter shape
 
-To get started, let's create a sample application with an ADK agent and a simple
-web client:
+An ADK-to-AG-UI adapter keeps the runtime boundary explicit:
+
+| ADK Runtime event | AG-UI contract | UI responsibility |
+|---|---|---|
+| Model text and partial text | Message and delta events | Append streaming assistant output without losing ordering. |
+| `functionCall` parts | Tool-call events | Render pending tool work, arguments, progress, and cancellation affordances. |
+| `functionResponse` parts | Tool-result events | Resolve the matching tool call and render the result or error state. |
+| `actions.stateDelta` | State events | Project approved session state into application state. |
+| Run start, completion, and errors | Lifecycle events | Show loading, completion, retry, and failure states. |
+| Human-input requests | Human-in-the-loop events | Present an approval or input UI and send the decision back to ADK. |
+
+## Example client: CopilotKit
+
+CopilotKit is one AG-UI client implementation. Use it when you want a packaged
+React client, runtime wiring, and components on top of an AG-UI-compatible ADK
+adapter.
+
+To create a sample application with an ADK agent and a CopilotKit web client:
 
 1. Create the app:
 
@@ -76,78 +95,35 @@ This starts two servers:
 Open [http://localhost:3000](http://localhost:3000) in your browser to chat with
 your agent.
 
-## Features
+## Capability map
 
-### Chat
+The live examples for these capabilities live on the
+[Frontend patterns](/runtime/frontend-interfaces/patterns/) page, where each
+pattern is shown with code beside an embedded ADK-backed showcase.
 
-Chat is a familiar interface for exposing your agent, and AG-UI handles
-streaming messages between your users and agents:
-
-```tsx title="src/app/page.tsx"
-<CopilotSidebar
-  clickOutsideToClose={false}
-  defaultOpen={true}
-  labels={{
-    title: "Popup Assistant",
-    initial: "👋 Hi, there! You're chatting with an agent. This agent comes with a few tools to get you started..."
-  }}
-/>
-```
-
-Learn more about the chat UI
-[in the CopilotKit docs](https://docs.copilotkit.ai/adk/agentic-chat-ui).
-
-### Generative UI
-
-AG-UI lets you share tool information with a Generative UI so that it can be
-displayed to users:
-
-```tsx title="src/app/page.tsx"
-useRenderToolCall(
-  {
-    name: "get_weather",
-    description: "Get the weather for a given location.",
-    parameters: [{ name: "location", type: "string", required: true }],
-    render: ({ args }) => {
-      return <WeatherCard location={args.location} themeColor={themeColor} />;
-    },
-  },
-  [themeColor],
-);
-```
-
-Learn more about Generative UI
-[in the CopilotKit docs](https://docs.copilotkit.ai/adk/generative-ui).
-
-### Shared State
-
-ADK agents can be stateful, and synchronizing that state between your agents and
-your UIs enables powerful and fluid user experiences. State can be synchronized
-both ways so agents are automatically aware of changes made by your user or
-other parts of your application:
-
-```tsx title="src/app/page.tsx"
-const { state, setState } = useCoAgent<AgentState>({
-  name: "my_agent",
-  initialState: {
-    proverbs: [
-      "A journey of a thousand miles begins with a single step.",
-    ],
-  },
-})
-```
-
-Learn more about shared state
-[in the CopilotKit docs](https://docs.copilotkit.ai/adk/shared-state).
+| Capability | Use it when | Live pattern |
+|---|---|---|
+| Chat and streaming messages | Users need conversational interaction with an agent. | [Frontend patterns](/runtime/frontend-interfaces/patterns/) |
+| Controlled generative UI | The app owns the React/native component and the agent selects when to render it. | [Controlled generative UI](/runtime/frontend-interfaces/patterns/#controlled-generative-ui) |
+| Declarative UI payloads | The agent should return portable structured UI data. | [A2UI declarative UI](/runtime/frontend-interfaces/patterns/#a2ui-declarative-ui) |
+| MCP Apps and open UI surfaces | The agent returns an app-like surface through MCP or another sandboxed UI path. | [Open generative UI and MCP Apps](/runtime/frontend-interfaces/patterns/#open-generative-ui-and-mcp-apps) |
+| Tool rendering | The frontend should show tool calls, progress, results, and failures as first-class UI. | [Tool rendering](/runtime/frontend-interfaces/patterns/#tool-rendering) |
+| Frontend tools and context | The agent needs approved application context or client-side actions. | [Frontend tools and context](/runtime/frontend-interfaces/patterns/#frontend-tools-and-context) |
+| Shared state | The UI and agent need an explicit synchronized state boundary. | [Shared state](/runtime/frontend-interfaces/patterns/#shared-state) |
+| Human-in-the-loop | The run needs user review, approval, revision, or selection before continuing. | [Human-in-the-loop](/runtime/frontend-interfaces/patterns/#human-in-the-loop) |
 
 ## Resources
 
-To see what other features you can build into your UI with AG-UI, refer to the
-CopilotKit docs:
+To learn the protocol and see running examples:
+
+- [AG-UI docs](https://docs.ag-ui.com/)
+- [AG-UI protocol repository](https://github.com/ag-ui-protocol/ag-ui)
+- [AG-UI Dojo](https://dojo.ag-ui.com)
+- [Frontend patterns](/runtime/frontend-interfaces/patterns/)
+
+For CopilotKit implementation examples:
 
 - [Agentic Generative UI](https://docs.copilotkit.ai/adk/generative-ui/agentic)
 - [A2UI with CopilotKit](https://docs.copilotkit.ai/adk/generative-ui/a2ui)
 - [Human in the Loop](https://docs.copilotkit.ai/adk/human-in-the-loop)
 - [Frontend Actions](https://docs.copilotkit.ai/adk/frontend-actions)
-
-Or try them out in the [AG-UI Dojo](https://dojo.ag-ui.com).

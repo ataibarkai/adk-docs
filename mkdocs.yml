@@ -333,10 +333,10 @@ nav:
       - Event Loop: runtime/event-loop.md
     - Frontend Interfaces:
       - runtime/frontend-interfaces/index.md
-      - Custom frontends with ADK APIs: runtime/frontend-interfaces/custom-frontends.md
-      - Frontend patterns: runtime/frontend-interfaces/patterns.md
+      - Custom ADK APIs: runtime/frontend-interfaces/custom-frontends.md
       - AG-UI: integrations/ag-ui.md
       - A2UI: integrations/a2ui.md
+      - Frontend patterns: runtime/frontend-interfaces/patterns.md
     - Deployment:
       - deploy/index.md
       - Agent Runtime:

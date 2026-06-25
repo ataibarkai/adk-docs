@@ -6,26 +6,27 @@ catalog_icon: /integrations/assets/a2ui.svg
 
 # A2UI — Agent-to-UI for ADK
 
-<div class="language-support-tag">
-  <span class="lst-supported">Supported in ADK</span><span class="lst-python">Python</span>
-</div>
-
-A2UI lets your agent generate **real UI** — cards, forms, charts, tables — not
-just text. Your agent outputs structured JSON, and a renderer on the client
-turns it into interactive components.
+A2UI lets your agent describe structured UI — cards, forms, charts, tables —
+instead of returning only text. Your agent outputs declarative JSON, and a
+renderer on the client turns it into approved application components.
 
 It's transport-agnostic: A2UI payloads work over A2A, MCP, REST, WebSockets,
 or any other protocol. The agent describes *what* to show; the client decides
 *how* to render it.
 
 !!! tip "A2UI and frontend protocols"
-    A2UI is a structured UI payload format, not a replacement for the runtime
-    stream between an agent and an application. If your ADK app also needs
-    streaming messages, tool calls, state sync, and human-in-the-loop events,
-    carry A2UI payloads through a frontend protocol such as
-    [AG-UI](/integrations/ag-ui/). See
+    A2UI is a transport-agnostic UI payload format. It answers what UI the agent
+    wants to show, not how the full conversation stream is delivered. Pair A2UI
+    with [AG-UI](/integrations/ag-ui/) when your ADK app also needs
+    bidirectional streaming messages, tool calls, state sync, lifecycle events,
+    or human-in-the-loop flows. See
     [Frontend interfaces](/runtime/frontend-interfaces/) for the full ADK
     frontend map.
+
+!!! warning "Version note"
+    The current `a2ui-agent-sdk` package requires Python 3.14 or newer. The
+    snippets below use the current SDK import paths and show v0.9 constants
+    because those are the stable paths used by the A2UI agent development guide.
 
 !!! info "Learn more about A2UI"
     [a2ui.org](https://a2ui.org/) has the full specification, component
@@ -45,12 +46,15 @@ The `A2uiSchemaManager` loads component catalogs and generates system prompts
 that teach the LLM how to produce valid A2UI JSON.
 
 ```python
-from a2ui.core.schema.manager import A2uiSchemaManager
+from a2ui.schema.constants import VERSION_0_9
+from a2ui.schema.manager import A2uiSchemaManager
 from a2ui.basic_catalog.provider import BasicCatalog
 
 schema_manager = A2uiSchemaManager(
+    version=VERSION_0_9,
     catalogs=[
         BasicCatalog.get_config(
+            version=VERSION_0_9,
             examples_path="examples",
         ),
     ],
@@ -58,17 +62,18 @@ schema_manager = A2uiSchemaManager(
 ```
 
 !!! note
-    The schema manager will automatically detect the A2UI version from
-    incoming client requests. You can also set a version explicitly by
-    passing `version=VERSION_0_9` if needed.
+    `A2uiSchemaManager` instances are version-specific. If your agent supports
+    multiple A2UI protocol versions, preconfigure one schema manager per version
+    and use `try_activate_a2ui_extension` at request time to select the active
+    manager.
 
 !!! tip
     If you omit the `catalogs` parameter, the schema manager uses the
     [Basic Catalog](https://a2ui.org/concepts/catalogs/) maintained by the
     A2UI team, which includes common components like Text, Card, Button,
-    Image, and more. You can also create [custom catalogs](#custom-catalogs)
+    Image, and more. You can also create [custom catalogs](#custom-catalog-configuration)
     with domain-specific components, or mix the basic catalog with your own
-    — see [Advanced patterns](#advanced-patterns) below.
+    — see [Backend implementation notes](#backend-implementation-notes) below.
 
 ### 2. Generate the system prompt
 
@@ -102,14 +107,14 @@ agent = LlmAgent(
 )
 ```
 
-### 4. Validate and stream A2UI output
+### 4. Validate A2UI output
 
 Always validate the LLM's JSON output before sending it to the client. The SDK
 provides parsing, fixing, and validation utilities:
 
 ```python
-from a2ui.core.parser.parser import parse_response
-from a2ui.a2a import parse_response_to_parts
+from a2ui.parser.parser import parse_response
+from a2ui.a2a.parts import parse_response_to_parts
 
 # Get the active catalog's validator
 selected_catalog = schema_manager.get_selected_catalog()
@@ -128,30 +133,56 @@ parts = parse_response_to_parts(
 )
 ```
 
-A2UI payloads are wrapped in A2A `DataPart` with the MIME type
-`application/json+a2ui` so renderers can identify them:
+A2UI JSON is untrusted model output until it validates against the selected
+catalog. Validate before rendering, and use deterministic fallback text or retry
+logic when validation fails.
 
-```python
-from a2ui.a2a import create_a2ui_part
+When you carry A2UI through A2A, the payload is wrapped in a `DataPart` so
+renderers can identify it. The v1.0 A2A extension uses the MIME type
+`application/a2ui+json`:
 
-part = create_a2ui_part({"type": "Card", "props": {"title": "Hello"}})
-# → DataPart(data={...}, metadata={"mimeType": "application/json+a2ui"})
+```json
+{
+  "kind": "data",
+  "data": [
+    {
+      "version": "v1.0",
+      "createSurface": {
+        "surfaceId": "hello",
+        "catalogId": "https://example.com/catalog.json"
+      }
+    }
+  ],
+  "metadata": {
+    "mimeType": "application/a2ui+json"
+  }
+}
 ```
 
-## Advanced patterns
+After validation, carry the payload through the stream your frontend already
+uses: A2A, AG-UI, REST, Server-Sent Events, or a custom ADK API adapter.
 
-### Dynamic catalogs
+## Backend implementation notes
+
+The live side-by-side A2UI example is in
+[Frontend patterns](/runtime/frontend-interfaces/patterns/#a2ui-declarative-ui).
+The sections below are backend reference snippets for catalog selection,
+catalog configuration, and capability advertisement.
+
+### Dynamic catalog selection
 
 For agents that need different UI components depending on context (e.g., charts
 for data queries, forms for configuration), resolve the catalog at runtime and
 store it in session state:
 
 ```python
+from a2ui.schema.constants import A2UI_CLIENT_CAPABILITIES_KEY
+
 async def _prepare_session(self, context, run_request, runner):
     session = await super()._prepare_session(context, run_request, runner)
 
     # Determine client capabilities from request metadata
-    capabilities = context.message.metadata.get("a2ui_client_capabilities")
+    capabilities = context.message.metadata.get(A2UI_CLIENT_CAPABILITIES_KEY)
 
     # Select the right catalog
     a2ui_catalog = self.schema_manager.get_selected_catalog(
@@ -159,15 +190,18 @@ async def _prepare_session(self, context, run_request, runner):
     )
     examples = self.schema_manager.load_examples(a2ui_catalog, validate=True)
 
-    # Store in session state for tool access
+    # Store lightweight catalog metadata in session state for tool access
     await runner.session_service.append_event(
         session,
         Event(
             actions=EventActions(
                 state_delta={
                     "system:a2ui_enabled": True,
-                    "system:a2ui_catalog": a2ui_catalog,
-                    "system:a2ui_examples": examples,
+                    "system:a2ui_catalog_id": a2ui_catalog.catalog_id,
+                    "system:a2ui_component_ids": [
+                        component.id for component in a2ui_catalog.components
+                    ],
+                    "system:a2ui_example_count": len(examples),
                 }
             ),
         ),
@@ -175,16 +209,17 @@ async def _prepare_session(self, context, run_request, runner):
     return session
 ```
 
-### Custom catalogs
+### Custom catalog configuration
 
 You can define your own component catalogs for domain-specific UI:
 
 ```python
-from a2ui.core.schema.manager import CatalogConfig
+from a2ui.schema.manager import CatalogConfig
 
 schema_manager = A2uiSchemaManager(
+    version=VERSION_0_9,
     catalogs=[
-        BasicCatalog.get_config(),
+        BasicCatalog.get_config(version=VERSION_0_9),
         CatalogConfig.from_path(
             name="my_dashboard_catalog",
             catalog_path="catalogs/dashboard.json",
@@ -194,13 +229,13 @@ schema_manager = A2uiSchemaManager(
 )
 ```
 
-### Multi-agent orchestration
+### Agent card capabilities
 
 Orchestrator agents can aggregate A2UI capabilities from sub-agents and
 advertise them in the agent card:
 
 ```python
-from a2ui.a2a import get_a2ui_agent_extension
+from a2ui.a2a.extension import get_a2ui_agent_extension
 
 # Collect catalog IDs from sub-agents
 supported_catalog_ids = set()
@@ -216,6 +251,7 @@ agent_card = AgentCard(
     capabilities=AgentCapabilities(
         extensions=[
             get_a2ui_agent_extension(
+                version=VERSION_0_9,
                 supported_catalog_ids=list(supported_catalog_ids),
             )
         ]

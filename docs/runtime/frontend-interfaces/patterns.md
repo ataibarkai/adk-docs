@@ -10,18 +10,29 @@ only which framework renders the app, but which runtime contract carries
 messages, tool calls, state, approvals, and structured UI between ADK and the
 client.
 
-This page treats [AG-UI](/integrations/ag-ui/) as the most complete frontend
-path for production application UIs. It can carry every pattern below. A2UI gets
-its own standalone lane as a declarative UI payload format, and a custom ADK API
-client remains available when you want to build your own frontend SDK directly
-on `/run_sse`.
+This page treats [AG-UI](/integrations/ag-ui/) as the production-oriented event
+protocol path for application UIs. It can carry every pattern below. A2UI gets
+its own standalone lane as a transport-agnostic UI payload format, and a custom
+ADK API client remains available when you want to build your own frontend SDK
+directly on `/run_sse`.
 
 !!! note "Current runnable examples"
 
-    The embedded examples use the CopilotKit showcase because it already
-    demonstrates these frontend patterns against agent backends. The same
-    pattern applies to ADK when ADK Runtime events are adapted into AG-UI events
-    or when A2UI payloads are carried through your chosen client stream.
+    The embedded examples are external CopilotKit showcase apps backed by Google
+    ADK agents through an AG-UI adapter. They are runnable protocol examples, not
+    Google-hosted samples. Use them to study the frontend behavior, then decide
+    whether your ADK app should expose raw ADK APIs, AG-UI, A2UI payloads, or a
+    custom stream.
+
+## Pattern index
+
+- [Controlled generative UI](#controlled-generative-ui)
+- [A2UI declarative UI](#a2ui-declarative-ui)
+- [Open generative UI and MCP Apps](#open-generative-ui-and-mcp-apps)
+- [Tool rendering](#tool-rendering)
+- [Frontend tools and context](#frontend-tools-and-context)
+- [Shared state](#shared-state)
+- [Human-in-the-loop](#human-in-the-loop)
 
 ## Choose the layer first
 
@@ -46,8 +57,10 @@ add to an AG-UI frontend.
 
 <div class="frontend-pattern-copy" markdown>
 
-```tsx title="React client"
-import { useComponent } from "@copilotkit/react-core/v2";
+```tsx title="CopilotKit AG-UI client example"
+import {
+  useComponent,
+} from "@copilotkit/react-core/v2";
 import { z } from "zod";
 
 const renewalRiskCard = z.object({
@@ -63,8 +76,10 @@ export function RenewalRiskUI() {
   useComponent({
     agentId: "adk_agent",
     name: "showRenewalRiskCard",
-    description: "Render a renewal risk card for an account.",
+    description:
+      "Render a renewal risk card for an account.",
     parameters: renewalRiskCard,
+    // App-defined component.
     render: RenewalRiskCard,
   });
 
@@ -79,9 +94,11 @@ component and sends the result back through the AG-UI stream.
 
 <div class="frontend-pattern-demo" markdown>
 
-<iframe src="https://showcase.copilotkit.ai/integrations/langgraph-python/gen-ui-tool-based/preview" title="Controlled generative UI showcase" loading="lazy"></iframe>
+<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
 
-[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/langgraph-python/gen-ui-tool-based/preview){ target="_blank" }
+<iframe src="https://showcase.copilotkit.ai/integrations/google-adk/gen-ui-tool-based/preview" title="Controlled generative UI showcase"></iframe>
+
+[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/gen-ui-tool-based/preview){ target="_blank" }
 
 </div>
 
@@ -98,40 +115,35 @@ state, tools, and approvals.
 
 <div class="frontend-pattern-copy" markdown>
 
-```python title="ADK-side tool shape"
-from copilotkit import a2ui
+```python title="A2UI payload example"
+from a2ui.a2a.parts import create_a2ui_part
 
-CATALOG_ID = "copilotkit://renewal-catalog"
-SURFACE_ID = "renewal-plan"
-
-def display_renewal_plan(account_name: str, signals: list[str]) -> str:
-    return a2ui.render(
-        operations=[
-            a2ui.create_surface(SURFACE_ID, catalog_id=CATALOG_ID),
-            a2ui.update_components(SURFACE_ID, RENEWAL_PLAN_SCHEMA),
-            a2ui.update_data_model(
-                SURFACE_ID,
-                {
-                    "accountName": account_name,
-                    "riskLevel": "high",
-                    "signals": signals,
-                    "nextSteps": ["Schedule sponsor review"],
-                },
-            ),
-        ],
+def renewal_plan_part(account_name: str, signals: list[str]):
+    return create_a2ui_part(
+        {
+            "type": "Card",
+            "props": {
+                "title": f"Renewal plan for {account_name}",
+                "subtitle": "High-risk account",
+                "body": "\n".join(signals),
+            },
+        }
     )
 ```
 
-The agent returns structured A2UI operations. The client renderer maps the
-payload to an approved component catalog.
+The agent returns a structured A2UI payload. The transport wrapper can be A2A,
+AG-UI, REST, MCP, or a custom stream; the client renderer maps the payload to an
+approved component catalog.
 
 </div>
 
 <div class="frontend-pattern-demo" markdown>
 
-<iframe src="https://showcase.copilotkit.ai/integrations/langgraph-python/declarative-gen-ui/preview" title="A2UI declarative UI showcase" loading="lazy"></iframe>
+<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through A2UI and AG-UI. Use the link below if the embed is blocked.</p>
 
-[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/langgraph-python/declarative-gen-ui/preview){ target="_blank" }
+<iframe src="https://showcase.copilotkit.ai/integrations/google-adk/declarative-gen-ui/preview" title="A2UI declarative UI showcase"></iframe>
+
+[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/declarative-gen-ui/preview){ target="_blank" }
 
 </div>
 
@@ -148,13 +160,14 @@ surface with the right sandbox, permissions, and lifecycle.
 
 <div class="frontend-pattern-copy" markdown>
 
-```ts title="Runtime configuration"
+```ts title="CopilotKit AG-UI client example"
 import { CopilotRuntime } from "@copilotkit/runtime/v2";
 import { HttpAgent } from "@ag-ui/client";
 
 export const runtime = new CopilotRuntime({
   agents: {
     adk_agent: new HttpAgent({
+      // Adapter endpoint, not the raw ADK API server.
       url: process.env.ADK_AG_UI_URL ?? "http://localhost:8000/",
     }),
   },
@@ -173,15 +186,18 @@ export const runtime = new CopilotRuntime({
 
 The runtime makes an app-capable MCP server available. The agent can call it,
 and the frontend renders the returned app surface instead of hand-building a
-custom component for every tool.
+custom component for every tool. This assumes the ADK agent is exposed through
+an AG-UI-compatible adapter.
 
 </div>
 
 <div class="frontend-pattern-demo" markdown>
 
-<iframe src="https://showcase.copilotkit.ai/integrations/langgraph-python/mcp-apps/preview" title="MCP Apps showcase" loading="lazy"></iframe>
+<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
 
-[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/langgraph-python/mcp-apps/preview){ target="_blank" }
+<iframe src="https://showcase.copilotkit.ai/integrations/google-adk/mcp-apps/preview" title="MCP Apps showcase"></iframe>
+
+[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/mcp-apps/preview){ target="_blank" }
 
 </div>
 
@@ -197,8 +213,10 @@ important tools and a default renderer for the long tail.
 
 <div class="frontend-pattern-copy" markdown>
 
-```tsx title="React client"
-import { useRenderToolCall } from "@copilotkit/react-core";
+```tsx title="CopilotKit AG-UI client example"
+import {
+  useRenderToolCall,
+} from "@copilotkit/react-core/v2";
 
 export function ToolCallRenderers() {
   useRenderToolCall({
@@ -207,6 +225,7 @@ export function ToolCallRenderers() {
       <ToolCard
         title={`Renewal risk for ${args.accountName}`}
         status={status}
+        // App-defined result renderer.
         result={result}
       />
     ),
@@ -223,26 +242,32 @@ empty states, retries, and errors appear to the user.
 
 <div class="frontend-pattern-demo" markdown>
 
-<iframe src="https://showcase.copilotkit.ai/integrations/langgraph-python/tool-rendering-default-catchall/preview" title="Tool rendering showcase" loading="lazy"></iframe>
+<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
 
-[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/langgraph-python/tool-rendering-default-catchall/preview){ target="_blank" }
+<iframe src="https://showcase.copilotkit.ai/integrations/google-adk/tool-rendering/preview" title="Tool rendering showcase"></iframe>
+
+[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/tool-rendering/preview){ target="_blank" }
 
 </div>
 
 </div>
 
-### In-app generative UI
+### Frontend tools and context
 
-Use in-app generative UI when the agent should read application context or ask
-the frontend to take a domain action, such as selecting a record, updating a
-filter, opening a panel, or triggering a browser/native capability.
+Use frontend tools and context for in-app generative UI: cases where the agent
+should read application context or ask the frontend to take a domain action,
+such as selecting a record, updating a filter, opening a panel, or triggering a
+browser/native capability.
 
 <div class="frontend-pattern-example" markdown>
 
 <div class="frontend-pattern-copy" markdown>
 
-```tsx title="React client"
-import { useAgentContext, useFrontendTool } from "@copilotkit/react-core/v2";
+```tsx title="CopilotKit AG-UI client example"
+import {
+  useAgentContext,
+  useFrontendTool,
+} from "@copilotkit/react-core/v2";
 import { z } from "zod";
 
 export function DashboardBridge({ selectedAccount, onSelectAccount }) {
@@ -265,15 +290,19 @@ export function DashboardBridge({ selectedAccount, onSelectAccount }) {
 ```
 
 The app exposes safe context and safe actions. The agent can respond in the UI
-without receiving unlimited access to the browser or application internals.
+without receiving unlimited access to the browser or application internals. In
+ADK, the adapter decides which frontend tool calls are exposed to the agent and
+how their results return to the runtime.
 
 </div>
 
 <div class="frontend-pattern-demo" markdown>
 
-<iframe src="https://showcase.copilotkit.ai/integrations/langgraph-python/frontend-tools/preview" title="In-app generative UI showcase" loading="lazy"></iframe>
+<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
 
-[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/langgraph-python/frontend-tools/preview){ target="_blank" }
+<iframe src="https://showcase.copilotkit.ai/integrations/google-adk/frontend-tools/preview" title="In-app generative UI showcase"></iframe>
+
+[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/frontend-tools/preview){ target="_blank" }
 
 </div>
 
@@ -289,8 +318,11 @@ the agent can write state back when it discovers or produces useful context.
 
 <div class="frontend-pattern-copy" markdown>
 
-```tsx title="React client"
-import { useAgent, UseAgentUpdate } from "@copilotkit/react-core/v2";
+```tsx title="CopilotKit AG-UI client example"
+import {
+  useAgent,
+  UseAgentUpdate,
+} from "@copilotkit/react-core/v2";
 
 export function AccountBrief({ account }) {
   const { agent } = useAgent({
@@ -309,20 +341,25 @@ export function AccountBrief({ account }) {
     });
   }
 
-  return <FocusSelect onChange={updateFocus} />;
+  return <FocusSelect onChange={updateFocus} />; // App-defined control.
 }
 ```
 
 Shared state turns the frontend from a passive renderer into part of the
-agent's working context while preserving an explicit state boundary.
+agent's working context while preserving an explicit state boundary. In ADK,
+the adapter should map application-facing state events to the ADK session or
+state model deliberately; do not treat shared state as unrestricted mutation of
+agent internals.
 
 </div>
 
 <div class="frontend-pattern-demo" markdown>
 
-<iframe src="https://showcase.copilotkit.ai/integrations/langgraph-python/shared-state-read-write/preview" title="Shared state showcase" loading="lazy"></iframe>
+<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
 
-[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/langgraph-python/shared-state-read-write/preview){ target="_blank" }
+<iframe src="https://showcase.copilotkit.ai/integrations/google-adk/shared-state-read-write/preview" title="Shared state showcase"></iframe>
+
+[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/shared-state-read-write/preview){ target="_blank" }
 
 </div>
 
@@ -339,15 +376,18 @@ decision back through the run stream.
 
 <div class="frontend-pattern-copy" markdown>
 
-```tsx title="React client"
-import { useHumanInTheLoop } from "@copilotkit/react-core/v2";
+```tsx title="CopilotKit AG-UI client example"
+import {
+  useHumanInTheLoop,
+} from "@copilotkit/react-core/v2";
 import { z } from "zod";
 
 export function RenewalApproval() {
   useHumanInTheLoop({
     agentId: "adk_agent",
     name: "reviewRenewalOutreach",
-    description: "Ask the user to approve or revise outreach.",
+    description:
+      "Ask the user to approve or revise outreach.",
     parameters: z.object({
       accountName: z.string(),
       draftMessage: z.string(),
@@ -368,15 +408,20 @@ export function RenewalApproval() {
 ```
 
 The agent asks for a decision. The application presents the right approval UI,
-records the human response, and lets the agent continue with that result.
+records the human response, and lets the agent continue with that result. The
+backend still needs a pause/resume or human-input mechanism, such as ADK
+[human input for workflows](/graphs/human-input/), that the frontend contract
+can surface.
 
 </div>
 
 <div class="frontend-pattern-demo" markdown>
 
-<iframe src="https://showcase.copilotkit.ai/integrations/langgraph-python/hitl-in-chat/preview" title="Human-in-the-loop showcase" loading="lazy"></iframe>
+<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
 
-[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/langgraph-python/hitl-in-chat/preview){ target="_blank" }
+<iframe src="https://showcase.copilotkit.ai/integrations/google-adk/hitl-in-chat/preview" title="Human-in-the-loop showcase"></iframe>
+
+[:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/hitl-in-chat/preview){ target="_blank" }
 
 </div>
 

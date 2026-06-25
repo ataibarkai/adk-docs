@@ -598,12 +598,12 @@ nav.md-nav--primary .md-nav__item--section>.md-nav__link {
 /* Frontend interface pattern examples */
 .frontend-pattern-example {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+  grid-template-columns: minmax(18rem, 0.85fr) minmax(24rem, 1.15fr);
   gap: 1rem;
   align-items: stretch;
   margin: 1rem 0 2rem;
-  width: min(50rem, calc(100vw - 20rem));
-  margin-left: calc((100% - min(50rem, calc(100vw - 20rem))) / 2);
+  width: 100%;
+  max-width: 60rem;
 }
 
 .frontend-pattern-copy,
@@ -620,15 +620,25 @@ nav.md-nav--primary .md-nav__item--section>.md-nav__link {
   margin: 0 0 0.8rem;
 }
 
+.frontend-pattern-copy .highlight pre {
+  overflow-x: auto;
+}
+
 .frontend-pattern-demo {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
 
+.frontend-pattern-demo-caption {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.72rem;
+  margin: 0;
+}
+
 .frontend-pattern-demo iframe {
   width: 100%;
-  min-height: 460px;
+  height: clamp(22rem, 45vh, 28rem);
   border: 1px solid var(--md-default-fg-color--lightest);
   border-radius: 6px;
   background: var(--md-default-bg-color);
@@ -643,7 +653,7 @@ nav.md-nav--primary .md-nav__item--section>.md-nav__link {
   border-color: var(--md-default-fg-color--lightest);
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1180px) {
   .frontend-pattern-example {
     grid-template-columns: 1fr;
     width: auto;
@@ -651,6 +661,21 @@ nav.md-nav--primary .md-nav__item--section>.md-nav__link {
   }
 
   .frontend-pattern-demo iframe {
-    min-height: 360px;
+    height: 24rem;
+  }
+}
+
+@media (max-width: 600px) {
+  body:has(.frontend-pattern-example) .md-top {
+    display: none;
+  }
+
+  .frontend-pattern-copy .highlight pre code {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  .frontend-pattern-demo iframe {
+    height: 22rem;
   }
 }
