@@ -103,6 +103,7 @@ The layers solve different problems:
 
 After you choose the interface, pick the UI patterns your application needs:
 controlled generative UI, declarative A2UI payloads, open-ended UI surfaces,
-tool rendering, in-app generative UI, and human-in-the-loop.
+tool rendering, in-app generative UI, shared state, and human-in-the-loop. The
+patterns page shows each feature with code and a live embedded showcase.
 
 [:octicons-arrow-right-24: Explore frontend patterns](/runtime/frontend-interfaces/patterns/)

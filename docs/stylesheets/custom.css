@@ -594,3 +594,63 @@ nav.md-nav--primary .md-nav__item--section>.md-nav__link {
     display: inline;
   }
 }
+
+/* Frontend interface pattern examples */
+.frontend-pattern-example {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+  gap: 1rem;
+  align-items: stretch;
+  margin: 1rem 0 2rem;
+  width: min(50rem, calc(100vw - 20rem));
+  margin-left: calc((100% - min(50rem, calc(100vw - 20rem))) / 2);
+}
+
+.frontend-pattern-copy,
+.frontend-pattern-demo {
+  min-width: 0;
+}
+
+.frontend-pattern-copy > :first-child,
+.frontend-pattern-demo > :first-child {
+  margin-top: 0;
+}
+
+.frontend-pattern-copy .highlight {
+  margin: 0 0 0.8rem;
+}
+
+.frontend-pattern-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.frontend-pattern-demo iframe {
+  width: 100%;
+  min-height: 460px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 6px;
+  background: var(--md-default-bg-color);
+}
+
+.frontend-pattern-demo p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+[data-md-color-scheme="slate"] .frontend-pattern-demo iframe {
+  border-color: var(--md-default-fg-color--lightest);
+}
+
+@media (max-width: 960px) {
+  .frontend-pattern-example {
+    grid-template-columns: 1fr;
+    width: auto;
+    margin-left: 0;
+  }
+
+  .frontend-pattern-demo iframe {
+    min-height: 360px;
+  }
+}
