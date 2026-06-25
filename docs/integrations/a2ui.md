@@ -4,43 +4,93 @@ catalog_description: Generate rich, structured UIs from your agents using the Ag
 catalog_icon: /integrations/assets/a2ui.svg
 ---
 
-# A2UI — Agent-to-UI for ADK
+# A2UI - declarative generative UI for ADK
 
-A2UI lets your agent describe structured UI — cards, forms, charts, tables —
-instead of returning only text. Your agent outputs declarative JSON, and a
-renderer on the client turns it into approved application components.
+A2UI is a declarative generative UI spec. Instead of returning only text, an ADK
+agent can assemble a UI from a catalog of approved components: cards, forms,
+charts, tables, buttons, and domain-specific views. The agent outputs
+declarative JSON, and a renderer on the client turns it into approved
+application UI.
 
 It's transport-agnostic: A2UI payloads work over A2A, MCP, REST, WebSockets,
-or any other protocol. The agent describes *what* to show; the client decides
-*how* to render it.
+AG-UI, or any other protocol. A2UI describes *what* to render; the client and
+its renderer decide *how* to render it.
 
 !!! tip "A2UI and frontend protocols"
-    A2UI is a transport-agnostic UI payload format. It answers what UI the agent
-    wants to show, not how the full conversation stream is delivered. Pair A2UI
-    with [AG-UI](/integrations/ag-ui/) when your ADK app also needs
-    bidirectional streaming messages, tool calls, state sync, lifecycle events,
-    or human-in-the-loop flows. See
+    A2UI is a transport-agnostic declarative UI contract. It answers what UI the
+    agent wants to show, not how the full conversation stream is delivered. Pair
+    A2UI with [AG-UI](/integrations/ag-ui/) when your ADK app also needs
+    bidirectional streaming messages, agent activity, tool calls, state sync,
+    lifecycle events, frontend actions, or human-in-the-loop flows. See
     [Frontend interfaces](/runtime/frontend-interfaces/) for the full ADK
     frontend map.
+
+## What A2UI owns
+
+| Layer | Responsibility |
+|---|---|
+| Component catalog | The approved components the agent may use, including descriptions, prop schemas, examples, and renderer mappings. |
+| Agent prompt | The schema and examples that teach the model how to assemble valid A2UI messages. |
+| Validation | The boundary that treats generated UI as untrusted until it matches the selected catalog and protocol version. |
+| Renderer | The client-side implementation that maps A2UI descriptors to native UI in your design system. |
+
+AG-UI, A2A, REST, MCP, or a custom stream can carry the validated payload. A2UI
+does not replace the ADK Runtime, your session model, or the frontend event
+protocol.
+
+## ADK quickstart
+
+This journey mirrors the official A2UI ADK flow: start with a normal ADK agent,
+test it in `adk web`, then upgrade the response from text to declarative UI.
+
+### Install ADK and the A2UI SDK
+
+```bash
+pip install -U google-adk a2ui-agent-sdk
+```
 
 !!! warning "Version note"
     The current `a2ui-agent-sdk` package requires Python 3.14 or newer. The
     snippets below use the current SDK import paths and show v0.9 constants
     because those are the stable paths used by the A2UI agent development guide.
 
-!!! info "Learn more about A2UI"
-    [a2ui.org](https://a2ui.org/) has the full specification, component
-    gallery, catalog reference, and renderer documentation.
+### 1. Start with a plain ADK agent
 
-## Quickstart
+Create an ADK agent and tool the normal way. Verify the text-only experience
+first so you know the agent logic works before adding UI generation.
 
-### Install the SDK
+```python
+from google.adk.agents import Agent
 
-```bash
-pip install a2ui-agent-sdk
+def get_resources() -> list[dict]:
+    """Return project resources and their status."""
+    return [
+        {"name": "auth-service", "status": "healthy", "region": "us-west1"},
+        {"name": "events-db", "status": "warning", "issue": "Storage at 92%"},
+    ]
+
+root_agent = Agent(
+    model="gemini-flash-latest",
+    name="cloud_dashboard",
+    description="Reports on cloud resources.",
+    instruction=(
+        "When users ask about project resources, call get_resources and "
+        "summarize the result in plain text."
+    ),
+    tools=[get_resources],
+)
 ```
 
-### 1. Set up the Schema Manager
+Run the agent locally:
+
+```bash
+adk web
+```
+
+Ask a prompt such as `What's running in my project?`. At this point the agent
+should answer with text.
+
+### 2. Set up the Schema Manager
 
 The `A2uiSchemaManager` loads component catalogs and generates system prompts
 that teach the LLM how to produce valid A2UI JSON.
@@ -75,7 +125,7 @@ schema_manager = A2uiSchemaManager(
     with domain-specific components, or mix the basic catalog with your own
     — see [Backend implementation notes](#backend-implementation-notes) below.
 
-### 2. Generate the system prompt
+### 3. Generate the A2UI system prompt
 
 The `generate_system_prompt` method combines your agent's role description with
 the A2UI JSON schema and few-shot examples, so the LLM knows exactly how to
@@ -83,31 +133,51 @@ format its output.
 
 ```python
 instruction = schema_manager.generate_system_prompt(
-    role_description="You are a helpful assistant that presents information with rich UI.",
-    workflow_description="Analyze the user's request and return structured UI when appropriate.",
-    ui_description="Use cards for summaries, tables for comparisons, and forms for user input.",
+    role_description=(
+        "You are a cloud infrastructure assistant. When users ask about "
+        "resources, call get_resources before answering."
+    ),
+    workflow_description=(
+        "Analyze the user's request and return structured UI when appropriate."
+    ),
+    ui_description=(
+        "Use cards for resource summaries, tables for comparisons, buttons "
+        "for drill-down actions, and forms when you need user input. Respond "
+        "only with valid A2UI JSON."
+    ),
     include_schema=True,
     include_examples=True,
-    allowed_components=["Heading", "Text", "Card", "Button", "Table"],
 )
 ```
 
-### 3. Create your ADK agent
+### 4. Upgrade the ADK agent
 
-Use the generated instruction as the agent's system prompt:
+Use the generated instruction as the ADK agent's system prompt:
 
 ```python
-from google.adk.agents.llm_agent import LlmAgent
+from google.adk.agents import Agent
 
-agent = LlmAgent(
+root_agent = Agent(
     model="gemini-flash-latest",
-    name="ui_agent",
+    name="cloud_dashboard",
     description="An agent that generates rich UI responses.",
     instruction=instruction,
+    tools=[get_resources],
 )
 ```
 
-### 4. Validate A2UI output
+Run `adk web` again and ask the same prompt. The agent should now produce A2UI
+JSON instead of a wall of text. The exact rendering path depends on the client:
+ADK Web can be used for local experiments, while production apps should use a
+client renderer or carry A2UI through an application protocol such as AG-UI.
+
+If your local client shows raw JSON, that is still useful for the quickstart:
+copy the model text into `llm_output_text` in the validation step below. In a
+production adapter, `llm_output_text` is the text content you receive from the
+ADK event stream before you parse, validate, and forward the A2UI payload to a
+renderer.
+
+### 5. Validate A2UI output
 
 Always validate the LLM's JSON output before sending it to the client. The SDK
 provides parsing, fixing, and validation utilities:

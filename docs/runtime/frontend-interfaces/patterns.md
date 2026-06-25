@@ -11,10 +11,11 @@ messages, tool calls, state, approvals, and structured UI between ADK and the
 client.
 
 This page treats [AG-UI](/integrations/ag-ui/) as the production-oriented event
-protocol path for application UIs. It can carry every pattern below. A2UI gets
-its own standalone lane as a transport-agnostic UI payload format, and a custom
-ADK API client remains available when you want to build your own frontend SDK
-directly on `/run_sse`.
+protocol path for application UIs. It can carry every pattern below: agent
+activity, reasoning, tool calls, frontend actions, shared state, human review,
+and the full generative UI spectrum. A2UI gets its own standalone lane as a
+declarative generative UI spec, and a custom ADK API client remains available
+when you want to build your own frontend SDK directly on `/run_sse`.
 
 !!! note "Current runnable examples"
 
@@ -40,9 +41,12 @@ directly on `/run_sse`.
 |---|---|---|
 | ADK Runtime | You are building, running, and deploying agents. | Agent execution, sessions, tools, and runtime events. |
 | Custom ADK frontend client | You need a product-specific SDK or want to map `/run_sse` yourself. | Raw event consumption, state mapping, retries, and client contract design. |
-| AG-UI | Your application needs streaming messages, tool rendering, frontend tools, shared state, generative UI, or human approval flows. | A stable client-facing event protocol across web, mobile, and other frontend surfaces. |
-| A2UI | The agent should return a portable structured UI payload. | A declarative component payload that can travel through AG-UI, A2A, MCP, REST, or another stream. |
+| AG-UI | Your application needs streaming messages, tool rendering, frontend tools, shared state, generative UI, or human approval flows. | A stable client-facing event protocol across web, mobile, chat, and other frontend surfaces. |
+| A2UI | The agent should return a portable structured UI payload assembled from trusted components. | A declarative component payload that can travel through AG-UI, A2A, MCP, REST, or another stream. |
 | Frontend frameworks and channels | You are rendering the final user experience. | React, Vue, React Native, Flutter, Slack, Microsoft Teams, or another client surface. |
+
+For the strategic decision framework behind controlled, declarative, and open
+UI surfaces, see [Generative UI spectrum](generative-ui-spectrum.md).
 
 ## Feature examples
 
@@ -106,10 +110,12 @@ component and sends the result back through the AG-UI stream.
 
 ### A2UI declarative UI
 
-Use A2UI when the agent should return a portable UI payload instead of selecting
-one hard-coded component. A2UI can stand alone as a payload format, or it can
-travel through AG-UI when the same frontend also needs streaming messages,
-state, tools, and approvals.
+Use A2UI when the agent should return a declarative UI payload instead of
+selecting one hard-coded component. Developers define the catalog of trusted,
+catalog-defined components; the agent assembles those components on demand; the
+frontend renderer turns them into native application UI. A2UI can stand alone as
+a UI spec, or it can travel through AG-UI when the same frontend also needs
+streaming messages, state, tools, frontend actions, and approvals.
 
 <div class="frontend-pattern-example" markdown>
 
@@ -429,15 +435,17 @@ can surface.
 
 ## A2UI with AG-UI
 
-A2UI and AG-UI solve different layers of the frontend problem. A2UI describes a
-piece of UI the agent wants the client to render. AG-UI carries runtime events
-between the agent backend and the application UI.
+A2UI and AG-UI solve different layers of the frontend problem. A2UI defines the
+declarative UI contract: what catalog-backed surface the agent wants the client
+to render. AG-UI carries the live interaction stream between the agent backend
+and the application UI.
 
 Use them together when:
 
 1. The ADK agent should generate a structured UI payload.
-2. The application still needs a bidirectional stream for messages, tools,
-   state, lifecycle events, and user responses.
+2. The application still needs a bidirectional stream for messages, agent
+   activity, reasoning, tools, state, lifecycle events, frontend actions, and
+   user responses.
 3. The frontend can render the selected A2UI catalog safely inside the
    product's design system.
 

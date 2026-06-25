@@ -7,9 +7,10 @@ catalog_icon: /integrations/assets/ag-ui.png
 # AG-UI protocol for ADK frontends
 
 Connect your ADK agents to full-featured applications with rich, responsive UIs.
-[AG-UI](https://docs.ag-ui.com/) is an open protocol that handles streaming
-events, client state, and bidirectional communication between agents and
-application frontends.
+[AG-UI](https://docs.ag-ui.com/) is an open protocol for the live
+agent-frontend loop: streaming events, client state, tool calls, frontend
+actions, generative UI, human review, and bidirectional communication between
+agents and application frontends.
 
 [AG-UI](https://github.com/ag-ui-protocol/ag-ui) provides a consistent interface
 to empower rich clients across technology stacks, from mobile to the web and
@@ -31,8 +32,8 @@ AG-UI:
 ADK Runtime events are the source of truth for an agent run. AG-UI adapts those
 events into a stable client-facing protocol for application frontends. Use
 AG-UI when your UI needs more than a single text response: streaming messages,
-tool-call rendering, shared state, frontend tools, human approvals, or
-generative UI.
+agent activity, reasoning, tool-call rendering, shared state, frontend tools,
+human approvals, or generative UI.
 
 The layers are:
 
@@ -46,7 +47,9 @@ ADK agent and Runtime events
 
 For a broader map of ADK frontend options, see
 [Frontend interfaces](/runtime/frontend-interfaces/). For the pattern-level
-breakdown, see [Frontend patterns](/runtime/frontend-interfaces/patterns/).
+breakdown, see
+[Generative UI spectrum](/runtime/frontend-interfaces/generative-ui-spectrum/)
+and [Frontend patterns](/runtime/frontend-interfaces/patterns/).
 
 ## Adapter shape
 
@@ -61,39 +64,15 @@ An ADK-to-AG-UI adapter keeps the runtime boundary explicit:
 | Run start, completion, and errors | Lifecycle events | Show loading, completion, retry, and failure states. |
 | Human-input requests | Human-in-the-loop events | Present an approval or input UI and send the decision back to ADK. |
 
-## Example client: CopilotKit
+## Example AG-UI clients
 
-CopilotKit is one AG-UI client implementation. Use it when you want a packaged
-React client, runtime wiring, and components on top of an AG-UI-compatible ADK
-adapter.
+AG-UI is a protocol, not a single frontend SDK. Choose a client implementation
+for the surface you are building:
 
-To create a sample application with an ADK agent and a CopilotKit web client:
-
-1. Create the app:
-
-    ```bash
-    npx copilotkit@latest create -f adk
-    ```
-
-2. Set your Google API key:
-
-    ```bash
-    export GOOGLE_API_KEY="your-api-key"
-    ```
-
-3. Install dependencies and run:
-
-    ```bash
-    npm install && npm run dev
-    ```
-
-This starts two servers:
-
-- **http://localhost:3000** - The web UI (open this in your browser)
-- **http://localhost:8000** - The ADK agent API (backend only)
-
-Open [http://localhost:3000](http://localhost:3000) in your browser to chat with
-your agent.
+| Client | Use it for |
+|---|---|
+| CopilotKit | Packaged React client, runtime wiring, and components on top of an AG-UI-compatible ADK adapter. To scaffold an ADK sample, run `npx copilotkit@latest create -f adk`. |
+| Community clients | Kotlin, Java, Go, command-line, or custom clients that consume AG-UI events directly. |
 
 ## Capability map
 
@@ -105,12 +84,33 @@ pattern is shown with code beside an embedded ADK-backed showcase.
 |---|---|---|
 | Chat and streaming messages | Users need conversational interaction with an agent. | [Frontend patterns](/runtime/frontend-interfaces/patterns/) |
 | Controlled generative UI | The app owns the React/native component and the agent selects when to render it. | [Controlled generative UI](/runtime/frontend-interfaces/patterns/#controlled-generative-ui) |
-| Declarative UI payloads | The agent should return portable structured UI data. | [A2UI declarative UI](/runtime/frontend-interfaces/patterns/#a2ui-declarative-ui) |
+| Declarative UI payloads | The agent should assemble portable structured UI from approved component catalogs. | [A2UI declarative UI](/runtime/frontend-interfaces/patterns/#a2ui-declarative-ui) |
 | MCP Apps and open UI surfaces | The agent returns an app-like surface through MCP or another sandboxed UI path. | [Open generative UI and MCP Apps](/runtime/frontend-interfaces/patterns/#open-generative-ui-and-mcp-apps) |
 | Tool rendering | The frontend should show tool calls, progress, results, and failures as first-class UI. | [Tool rendering](/runtime/frontend-interfaces/patterns/#tool-rendering) |
 | Frontend tools and context | The agent needs approved application context or client-side actions. | [Frontend tools and context](/runtime/frontend-interfaces/patterns/#frontend-tools-and-context) |
 | Shared state | The UI and agent need an explicit synchronized state boundary. | [Shared state](/runtime/frontend-interfaces/patterns/#shared-state) |
 | Human-in-the-loop | The run needs user review, approval, revision, or selection before continuing. | [Human-in-the-loop](/runtime/frontend-interfaces/patterns/#human-in-the-loop) |
+
+## A2UI with AG-UI
+
+A2UI and AG-UI operate at different layers. A2UI defines a declarative UI
+contract: the agent assembles catalog-backed components, and the frontend
+renderer turns them into native application UI. AG-UI carries that contract
+inside the broader interaction stream, alongside messages, agent activity,
+reasoning, tool calls, state, frontend tools, human-in-the-loop events,
+lifecycle events, and user responses.
+
+Use them together when an ADK app needs declarative generative UI and a full
+bidirectional frontend protocol:
+
+```text
+ADK agent logic
+  -> A2UI declarative UI contract
+  -> AG-UI interaction stream
+  -> Web, mobile, chat, or custom frontend renderer
+```
+
+Use A2UI for the UI shape. Use AG-UI for the live agent-user channel.
 
 ## Resources
 

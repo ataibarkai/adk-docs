@@ -333,6 +333,7 @@ nav:
       - Event Loop: runtime/event-loop.md
     - Frontend Interfaces:
       - runtime/frontend-interfaces/index.md
+      - Generative UI spectrum: runtime/frontend-interfaces/generative-ui-spectrum.md
       - Custom ADK APIs: runtime/frontend-interfaces/custom-frontends.md
       - AG-UI: integrations/ag-ui.md
       - A2UI: integrations/a2ui.md

@@ -29,22 +29,26 @@ The layers solve different problems:
 - **ADK Runtime events** are the source of truth for what the agent did.
 - **The API server** exposes those events over HTTP through `/run` and
   `/run_sse`.
-- **AG-UI** provides a stable application-facing event protocol for streaming
-  agent runs, state, tools, generative UI, and human-in-the-loop flows.
-- **A2UI** defines structured UI payloads that an agent can produce and a
-  client renderer can display.
+- **AG-UI** provides a stable application-facing event protocol for the full
+  back-and-forth between agents and application frontends: messages, activity,
+  state, tools, frontend actions, generative UI, and human-in-the-loop flows.
+- **A2UI** defines declarative generative UI payloads. The agent assembles
+  trusted, catalog-defined building blocks, and a client renderer displays them
+  with native application components.
 - **Frontend frameworks and channels** render the final experience for users.
 
 ## Choose by layer
 
-These choices are not peers. Build the frontend path in layers:
+These are complementary layers. Choose the interaction contract your frontend
+needs, then add any UI payload specs or rendering surfaces your experience
+requires.
 
 | Layer | Choose | Use it for |
 |---|---|---|
 | Development and debugging | [ADK Web](/runtime/web-interface/) | Build, inspect, and debug an agent locally. Do not use it as a production product UI. |
 | Runtime transport | [API Server](/runtime/api-server/) | Expose ADK agent runs through `/run` for batch-style calls or `/run_sse` for event streams. |
-| Client event contract | [Custom ADK APIs](/runtime/frontend-interfaces/custom-frontends/) or [AG-UI](/integrations/ag-ui/) | Use custom ADK APIs when you want to own the adapter and client contract yourself. Use AG-UI for a production-oriented application event protocol. |
-| Structured UI payload | [A2UI](/integrations/a2ui/) | Add portable cards, forms, charts, tables, or custom component payloads to the stream you already chose. |
+| Client event contract | [Custom ADK APIs](/runtime/frontend-interfaces/custom-frontends/) or [AG-UI](/integrations/ag-ui/) | Use custom ADK APIs when you want to own the adapter and client contract yourself. Use AG-UI for a production-oriented application event protocol across web, mobile, chat, and other surfaces. |
+| Structured UI payload | [A2UI](/integrations/a2ui/) | Add portable declarative UI built from approved component catalogs to the stream you already chose. |
 | Rendering surface | Frontend frameworks and channels | Render the final experience in React, Vue, React Native, Flutter, Slack, Microsoft Teams, or another client. |
 
 ## Recommended decision path
@@ -57,15 +61,15 @@ These choices are not peers. Build the frontend path in layers:
    [custom ADK APIs](/runtime/frontend-interfaces/custom-frontends/) when you
    want to own the full mapping from ADK events to your product's client
    protocol; [AG-UI](/integrations/ag-ui/) when application clients need
-   streaming messages, lifecycle events, state, tool calls, generative UI, or
-   human-in-the-loop flows.
+   streaming messages, lifecycle events, state, tool calls, frontend actions,
+   generative UI, or human-in-the-loop flows.
 4. Add [A2UI](/integrations/a2ui/) when the agent should return structured UI
-   payloads that a client renderer can display. A2UI is composable with AG-UI,
-   A2A, REST, MCP, and custom streams.
+   payloads assembled from trusted component catalogs. A2UI is composable with
+   AG-UI, A2A, REST, MCP, and custom streams.
 5. Render the chosen contract in the framework or channel your users actually
    use.
 
-## Current frontend paths
+## Frontend contracts
 
 <div class="grid cards" markdown>
 
@@ -83,17 +87,24 @@ These choices are not peers. Build the frontend path in layers:
     ---
 
     Use AG-UI when you need a production-oriented application event protocol:
-    streaming messages, shared state, tool rendering, generative UI, and
-    human-in-the-loop interactions.
+    streaming messages, shared state, tool rendering, frontend actions,
+    generative UI, and human-in-the-loop interactions.
 
     [:octicons-arrow-right-24: Build with AG-UI](/integrations/ag-ui/)
+
+</div>
+
+## Structured UI payloads
+
+<div class="grid cards" markdown>
 
 -   :material-card-multiple-outline:{ .lg .middle } **A2UI**
 
     ---
 
-    Use A2UI when the agent should describe structured UI that can travel
-    through AG-UI, A2A, REST, MCP, or a custom stream.
+    Use A2UI when the agent should assemble declarative UI from a catalog of
+    trusted application components. Carry it through AG-UI, A2A, REST, MCP, or
+    a custom stream.
 
     [:octicons-arrow-right-24: Generate UI with A2UI](/integrations/a2ui/)
 
@@ -101,9 +112,13 @@ These choices are not peers. Build the frontend path in layers:
 
 ## Frontend patterns
 
-After you choose the interface, pick the UI patterns your application needs:
-controlled generative UI, declarative A2UI payloads, open-ended UI surfaces,
-tool rendering, in-app generative UI, shared state, and human-in-the-loop. The
-patterns page shows each feature with code and a live embedded showcase.
+Use the generative UI spectrum to decide how much control belongs to the
+developer, the agent, and the client renderer. Then pick the specific frontend
+patterns your application needs: controlled generative UI, declarative A2UI
+payloads, open-ended UI surfaces, MCP Apps, tool rendering, in-app generative
+UI, shared state, and human-in-the-loop. The patterns page shows each feature
+with code and a live embedded showcase.
+
+[:octicons-arrow-right-24: Understand the generative UI spectrum](/runtime/frontend-interfaces/generative-ui-spectrum/)
 
 [:octicons-arrow-right-24: Explore frontend patterns](/runtime/frontend-interfaces/patterns/)
