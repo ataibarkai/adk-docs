@@ -18,6 +18,15 @@ It's transport-agnostic: A2UI payloads work over A2A, MCP, REST, WebSockets,
 or any other protocol. The agent describes *what* to show; the client decides
 *how* to render it.
 
+!!! tip "A2UI and frontend protocols"
+    A2UI is a structured UI payload format, not a replacement for the runtime
+    stream between an agent and an application. If your ADK app also needs
+    streaming messages, tool calls, state sync, and human-in-the-loop events,
+    carry A2UI payloads through a frontend protocol such as
+    [AG-UI](/integrations/ag-ui/). See
+    [Frontend interfaces](/runtime/frontend-interfaces/) for the full ADK
+    frontend map.
+
 !!! info "Learn more about A2UI"
     [a2ui.org](https://a2ui.org/) has the full specification, component
     gallery, catalog reference, and renderer documentation.

@@ -233,6 +233,7 @@ plugins:
         - integrations/*.md
         Run Agents:
         - runtime/*.md
+        - runtime/frontend-interfaces/*.md
         - visual-builder/*.md
         - deploy/*.md
         - observability/*.md
@@ -330,6 +331,12 @@ nav:
       - Cancel Agent Runs: runtime/cancel.md
       - Runtime Config: runtime/runconfig.md
       - Event Loop: runtime/event-loop.md
+    - Frontend Interfaces:
+      - runtime/frontend-interfaces/index.md
+      - Custom frontends with ADK APIs: runtime/frontend-interfaces/custom-frontends.md
+      - Frontend patterns: runtime/frontend-interfaces/patterns.md
+      - AG-UI: integrations/ag-ui.md
+      - A2UI: integrations/a2ui.md
     - Deployment:
       - deploy/index.md
       - Agent Runtime:

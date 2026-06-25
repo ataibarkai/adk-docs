@@ -33,6 +33,18 @@ AG-UI:
 This tutorial uses CopilotKit to create a sample app backed by an ADK agent that
 demonstrates some of the features supported by AG-UI.
 
+## Where AG-UI fits
+
+ADK Runtime events are the source of truth for an agent run. AG-UI adapts those
+events into a stable client-facing protocol for application frontends. Use
+AG-UI when your UI needs more than a single text response: streaming messages,
+tool-call rendering, shared state, frontend tools, human approvals, or
+generative UI.
+
+For a broader map of ADK frontend options, see
+[Frontend interfaces](/runtime/frontend-interfaces/). For the pattern-level
+breakdown, see [Frontend patterns](/runtime/frontend-interfaces/patterns/).
+
 ## Quickstart
 
 To get started, let's create a sample application with an ADK agent and a simple
@@ -134,6 +146,7 @@ To see what other features you can build into your UI with AG-UI, refer to the
 CopilotKit docs:
 
 - [Agentic Generative UI](https://docs.copilotkit.ai/adk/generative-ui/agentic)
+- [A2UI with CopilotKit](https://docs.copilotkit.ai/adk/generative-ui/a2ui)
 - [Human in the Loop](https://docs.copilotkit.ai/adk/human-in-the-loop)
 - [Frontend Actions](https://docs.copilotkit.ai/adk/frontend-actions)
 

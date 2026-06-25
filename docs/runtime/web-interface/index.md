@@ -14,6 +14,9 @@ tool provides a simple way to interactively develop and debug your agents.
     ADK Web is ***not meant for use in production deployments***. You should use
     ADK Web for development and debugging purposes only.
 
+    To build a product UI for users, see
+    [Frontend interfaces](/runtime/frontend-interfaces/).
+
 Key features of the ADK web interface include:
 
 - **Chat interface**: Send messages to your agents and view responses in
