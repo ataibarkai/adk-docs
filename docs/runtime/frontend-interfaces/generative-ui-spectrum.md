@@ -32,6 +32,8 @@ ADK agent logic
 Controlled UI is the safest first step. The app owns the component; the agent
 selects when to show it.
 
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
+
 <div class="frontend-pattern-example" markdown>
 
 <div class="frontend-pattern-copy" markdown>
@@ -52,8 +54,6 @@ frontend renders a known component and sends the result back through the stream.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use a suggested prompt in the frame to see the rendered state.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/gen-ui-tool-based/preview" title="Controlled generative UI showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/gen-ui-tool-based/preview){ target="_blank" }
@@ -67,6 +67,8 @@ frontend renders a known component and sends the result back through the stream.
 Declarative UI gives the agent more freedom without handing it arbitrary code.
 Developers provide a catalog of approved UI components, and the agent assembles
 those components into a UI for the current task.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -94,8 +96,6 @@ alongside state, tools, activity, human review, and user responses.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through A2UI and AG-UI. Use a suggested prompt in the frame to see the rendered state.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/declarative-gen-ui/preview" title="A2UI declarative UI showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/declarative-gen-ui/preview){ target="_blank" }
@@ -108,6 +108,8 @@ alongside state, tools, activity, human review, and user responses.
 
 Open UI lets the agent or a tool-owned app control more of the surface. The host
 application should keep a clear sandbox, permission model, and lifecycle.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -133,8 +135,6 @@ tool ecosystem, while the host frontend controls where and how it appears.
 </div>
 
 <div class="frontend-pattern-demo" markdown>
-
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use a suggested prompt in the frame to see the rendered state.</p>
 
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/mcp-apps/preview" title="MCP Apps showcase"></iframe>
 

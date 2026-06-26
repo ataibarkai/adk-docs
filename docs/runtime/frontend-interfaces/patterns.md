@@ -19,8 +19,8 @@ when you want to build your own frontend SDK directly on `/run_sse`.
 
 !!! note "Current runnable examples"
 
-    The embedded examples are external CopilotKit showcase apps backed by Google
-    ADK agents through an AG-UI adapter. They are runnable protocol examples, not
+    The embedded examples use a CopilotKit AG-UI frontend backed by Google ADK
+    agents. They are runnable protocol examples, not
     Google-hosted samples. Use them to study the frontend behavior, then decide
     whether your ADK app should expose raw ADK APIs, AG-UI, A2UI payloads, or a
     custom stream.
@@ -56,6 +56,8 @@ Use controlled generative UI when the agent can choose *when* to show a UI
 surface, but the application keeps ownership of the component, styling,
 validation, and interaction model. This is usually the first rich UI pattern to
 add to an AG-UI frontend.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -98,8 +100,6 @@ component and sends the result back through the AG-UI stream.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/gen-ui-tool-based/preview" title="Controlled generative UI showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/gen-ui-tool-based/preview){ target="_blank" }
@@ -111,11 +111,13 @@ component and sends the result back through the AG-UI stream.
 ### A2UI declarative UI
 
 Use A2UI when the agent should return a declarative UI payload instead of
-selecting one hard-coded component. Developers define the catalog of trusted,
-catalog-defined components; the agent assembles those components on demand; the
+selecting one hard-coded component. Developers define trusted component
+catalogs; the agent assembles those components on demand; the
 frontend renderer turns them into native application UI. A2UI can stand alone as
 a UI spec, or it can travel through AG-UI when the same frontend also needs
 streaming messages, state, tools, frontend actions, and approvals.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -145,8 +147,6 @@ approved component catalog.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through A2UI and AG-UI. Use the link below if the embed is blocked.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/declarative-gen-ui/preview" title="A2UI declarative UI showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/declarative-gen-ui/preview){ target="_blank" }
@@ -161,6 +161,8 @@ Use open generative UI when the agent needs to display a richer tool-owned
 surface, such as an MCP App, rather than a component that lives entirely in the
 host product. AG-UI can carry the run events while the frontend hosts the app
 surface with the right sandbox, permissions, and lifecycle.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -199,8 +201,6 @@ an AG-UI-compatible adapter.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/mcp-apps/preview" title="MCP Apps showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/mcp-apps/preview){ target="_blank" }
@@ -214,6 +214,8 @@ an AG-UI-compatible adapter.
 Use tool rendering when the most important UI is the status, arguments, result,
 or error for a backend tool call. The frontend can provide a custom renderer for
 important tools and a default renderer for the long tail.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -248,8 +250,6 @@ empty states, retries, and errors appear to the user.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/tool-rendering/preview" title="Tool rendering showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/tool-rendering/preview){ target="_blank" }
@@ -264,6 +264,8 @@ Use frontend tools and context for in-app generative UI: cases where the agent
 should read application context or ask the frontend to take a domain action,
 such as selecting a record, updating a filter, opening a panel, or triggering a
 browser/native capability.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -304,8 +306,6 @@ how their results return to the runtime.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/frontend-tools/preview" title="In-app generative UI showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/frontend-tools/preview){ target="_blank" }
@@ -319,6 +319,8 @@ how their results return to the runtime.
 Use shared state when the frontend and agent need a durable, synchronized view
 of the same working object. The UI can write state as the user navigates, and
 the agent can write state back when it discovers or produces useful context.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -361,8 +363,6 @@ agent internals.
 
 <div class="frontend-pattern-demo" markdown>
 
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
-
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/shared-state-read-write/preview" title="Shared state showcase"></iframe>
 
 [:octicons-link-external-16: Open showcase](https://showcase.copilotkit.ai/integrations/google-adk/shared-state-read-write/preview){ target="_blank" }
@@ -377,6 +377,8 @@ Use human-in-the-loop when an agent run must pause for review before continuing:
 approving an action, revising generated content, filling missing fields, or
 canceling a risky step. The frontend owns the review experience and sends the
 decision back through the run stream.
+
+<p class="frontend-pattern-example-caption">CopilotKit AG-UI frontend backed by Google ADK.</p>
 
 <div class="frontend-pattern-example" markdown>
 
@@ -422,8 +424,6 @@ can surface.
 </div>
 
 <div class="frontend-pattern-demo" markdown>
-
-<p class="frontend-pattern-demo-caption">External CopilotKit showcase backed by Google ADK through AG-UI. Use the link below if the embed is blocked.</p>
 
 <iframe src="https://showcase.copilotkit.ai/integrations/google-adk/hitl-in-chat/preview" title="Human-in-the-loop showcase"></iframe>
 

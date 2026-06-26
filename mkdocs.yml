@@ -326,18 +326,18 @@ nav:
           - Visual Builder: visual-builder/index.md
       - Command Line: runtime/command-line.md
       - API Server: runtime/api-server.md
+      - Frontend Interfaces:
+        - runtime/frontend-interfaces/index.md
+        - Generative UI spectrum: runtime/frontend-interfaces/generative-ui-spectrum.md
+        - Custom ADK APIs: runtime/frontend-interfaces/custom-frontends.md
+        - AG-UI: integrations/ag-ui.md
+        - A2UI: integrations/a2ui.md
+        - Frontend patterns: runtime/frontend-interfaces/patterns.md
       - Ambient Agents: runtime/ambient-agents.md
       - Resume Agents: runtime/resume.md
       - Cancel Agent Runs: runtime/cancel.md
       - Runtime Config: runtime/runconfig.md
       - Event Loop: runtime/event-loop.md
-    - Frontend Interfaces:
-      - runtime/frontend-interfaces/index.md
-      - Generative UI spectrum: runtime/frontend-interfaces/generative-ui-spectrum.md
-      - Custom ADK APIs: runtime/frontend-interfaces/custom-frontends.md
-      - AG-UI: integrations/ag-ui.md
-      - A2UI: integrations/a2ui.md
-      - Frontend patterns: runtime/frontend-interfaces/patterns.md
     - Deployment:
       - deploy/index.md
       - Agent Runtime:

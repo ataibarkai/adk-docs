@@ -601,7 +601,15 @@ nav.md-nav--primary .md-nav__item--section>.md-nav__link {
   grid-template-columns: minmax(18rem, 0.85fr) minmax(24rem, 1.15fr);
   gap: 1rem;
   align-items: stretch;
-  margin: 1rem 0 2rem;
+  margin: 0.45rem 0 2rem;
+  width: 100%;
+  max-width: 60rem;
+}
+
+.frontend-pattern-example-caption {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.72rem;
+  margin: 1rem 0 0;
   width: 100%;
   max-width: 60rem;
 }
@@ -628,12 +636,6 @@ nav.md-nav--primary .md-nav__item--section>.md-nav__link {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-}
-
-.frontend-pattern-demo-caption {
-  color: var(--md-default-fg-color--light);
-  font-size: 0.72rem;
-  margin: 0;
 }
 
 .frontend-pattern-demo iframe {
