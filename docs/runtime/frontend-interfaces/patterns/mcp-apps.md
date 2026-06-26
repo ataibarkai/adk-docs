@@ -43,5 +43,5 @@ custom component for every tool.
 Use this band for app-capable tools and third-party app experiences inside an
 ADK frontend.
 
-Return to the [spectrum overview](index.md) or compare the broader
+Return to the [generative UI spectrum](generative-ui-spectrum.md) or compare the broader
 [frontend patterns](../patterns.md).

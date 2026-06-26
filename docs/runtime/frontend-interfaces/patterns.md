@@ -32,10 +32,11 @@ actions, shared state, human review, and the full generative UI spectrum.
 
 | Pattern | Use it when |
 |---|---|
-| [Controlled generative UI](generative-ui-spectrum/controlled-generative-ui.md) | The app owns the component and the agent decides when to show it. |
-| [Declarative generative UI with A2UI](generative-ui-spectrum/declarative-generative-ui-a2ui.md) | The agent assembles trusted catalog components into a UI payload. |
-| [Open generative UI](generative-ui-spectrum/open-generative-ui.md) | The agent or tool needs a richer surface than fixed components or a catalog. |
-| [MCP Apps](generative-ui-spectrum/mcp-apps.md) | The frontend hosts app-capable tool surfaces from MCP servers. |
+| [Controlled generative UI](patterns/controlled-generative-ui.md) | The app owns the component and the agent decides when to show it. |
+| [Declarative generative UI with A2UI](patterns/declarative-generative-ui-a2ui.md) | The agent assembles trusted catalog components into a UI payload. |
+| [Open generative UI](patterns/open-generative-ui.md) | The agent or tool needs a richer surface than fixed components or a catalog. |
+| [MCP Apps](patterns/mcp-apps.md) | The frontend hosts app-capable tool surfaces from MCP servers. |
+| [Generative UI spectrum](patterns/generative-ui-spectrum.md) | Compare the control model across those four patterns. |
 
 ## Interaction patterns
 

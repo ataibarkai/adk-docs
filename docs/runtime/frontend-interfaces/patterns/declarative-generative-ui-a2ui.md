@@ -44,4 +44,5 @@ Use this band when the UI should vary by user intent while staying inside a
 trusted component catalog and renderer.
 
 Next, compare [open generative UI](open-generative-ui.md) or
-[MCP Apps](mcp-apps.md), or return to the [spectrum overview](index.md).
+[MCP Apps](mcp-apps.md), or return to the
+[generative UI spectrum](generative-ui-spectrum.md).

@@ -235,7 +235,7 @@ uses: A2A, AG-UI, REST, Server-Sent Events, or a custom ADK API adapter.
 ## Backend implementation notes
 
 The live side-by-side A2UI example is in
-[Declarative generative UI with A2UI](/runtime/frontend-interfaces/generative-ui-spectrum/declarative-generative-ui-a2ui/).
+[Declarative generative UI with A2UI](/runtime/frontend-interfaces/patterns/declarative-generative-ui-a2ui/).
 The sections below are backend reference snippets for catalog selection,
 catalog configuration, and capability advertisement.
 

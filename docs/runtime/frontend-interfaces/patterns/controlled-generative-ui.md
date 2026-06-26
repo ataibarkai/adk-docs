@@ -41,4 +41,4 @@ validation, state updates, and styling.
 
 Next, compare
 [declarative generative UI with A2UI](declarative-generative-ui-a2ui.md) or
-return to the [spectrum overview](index.md).
+return to the [generative UI spectrum](generative-ui-spectrum.md).

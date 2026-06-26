@@ -45,4 +45,4 @@ Use this band for exploratory visualizations, tool-produced views, and surfaces
 that need more freedom than a fixed component or A2UI catalog.
 
 Next, compare [MCP Apps](mcp-apps.md) or return to the
-[spectrum overview](index.md).
+[generative UI spectrum](generative-ui-spectrum.md).

@@ -119,6 +119,6 @@ payloads, open-ended UI surfaces, MCP Apps, tool rendering, in-app generative
 UI, shared state, and human-in-the-loop. The patterns page shows each feature
 with code and a live embedded showcase.
 
-[:octicons-arrow-right-24: Understand the generative UI spectrum](/runtime/frontend-interfaces/generative-ui-spectrum/)
+[:octicons-arrow-right-24: Understand the generative UI spectrum](/runtime/frontend-interfaces/patterns/generative-ui-spectrum/)
 
 [:octicons-arrow-right-24: Explore frontend patterns](/runtime/frontend-interfaces/patterns/)
