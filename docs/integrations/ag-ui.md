@@ -76,20 +76,21 @@ for the surface you are building:
 
 ## Capability map
 
-The live examples for these capabilities live on the
-[Frontend patterns](/runtime/frontend-interfaces/patterns/) page, where each
-pattern is shown with code beside an embedded ADK-backed showcase.
+The live examples for these capabilities live under
+[Frontend patterns](/runtime/frontend-interfaces/patterns/), with each pattern
+shown on its own page beside an embedded ADK-backed showcase.
 
 | Capability | Use it when | Live pattern |
 |---|---|---|
 | Chat and streaming messages | Users need conversational interaction with an agent. | [Frontend patterns](/runtime/frontend-interfaces/patterns/) |
-| Controlled generative UI | The app owns the React/native component and the agent selects when to render it. | [Controlled generative UI](/runtime/frontend-interfaces/patterns/#controlled-generative-ui) |
-| Declarative UI payloads | The agent should assemble portable structured UI from approved component catalogs. | [A2UI declarative UI](/runtime/frontend-interfaces/patterns/#a2ui-declarative-ui) |
-| MCP Apps and open UI surfaces | The agent returns an app-like surface through MCP or another sandboxed UI path. | [Open generative UI and MCP Apps](/runtime/frontend-interfaces/patterns/#open-generative-ui-and-mcp-apps) |
-| Tool rendering | The frontend should show tool calls, progress, results, and failures as first-class UI. | [Tool rendering](/runtime/frontend-interfaces/patterns/#tool-rendering) |
-| Frontend tools and context | The agent needs approved application context or client-side actions. | [Frontend tools and context](/runtime/frontend-interfaces/patterns/#frontend-tools-and-context) |
-| Shared state | The UI and agent need an explicit synchronized state boundary. | [Shared state](/runtime/frontend-interfaces/patterns/#shared-state) |
-| Human-in-the-loop | The run needs user review, approval, revision, or selection before continuing. | [Human-in-the-loop](/runtime/frontend-interfaces/patterns/#human-in-the-loop) |
+| Controlled generative UI | The app owns the React/native component and the agent selects when to render it. | [Controlled generative UI](/runtime/frontend-interfaces/generative-ui-spectrum/controlled-generative-ui/) |
+| Declarative UI payloads | The agent should assemble portable structured UI from approved component catalogs. | [Declarative generative UI with A2UI](/runtime/frontend-interfaces/generative-ui-spectrum/declarative-generative-ui-a2ui/) |
+| Open UI surfaces | The agent returns a richer sandboxed UI surface. | [Open generative UI](/runtime/frontend-interfaces/generative-ui-spectrum/open-generative-ui/) |
+| MCP Apps | The agent invokes app-capable tools from MCP servers. | [MCP Apps](/runtime/frontend-interfaces/generative-ui-spectrum/mcp-apps/) |
+| Tool rendering | The frontend should show tool calls, progress, results, and failures as first-class UI. | [Tool rendering](/runtime/frontend-interfaces/patterns/tool-rendering/) |
+| Frontend tools and context | The agent needs approved application context or client-side actions. | [Frontend tools and context](/runtime/frontend-interfaces/patterns/frontend-tools-and-context/) |
+| Shared state | The UI and agent need an explicit synchronized state boundary. | [Shared state](/runtime/frontend-interfaces/patterns/shared-state/) |
+| Human-in-the-loop | The run needs user review, approval, revision, or selection before continuing. | [Human-in-the-loop](/runtime/frontend-interfaces/patterns/human-in-the-loop/) |
 
 ## A2UI with AG-UI
 

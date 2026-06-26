@@ -234,6 +234,8 @@ plugins:
         Run Agents:
         - runtime/*.md
         - runtime/frontend-interfaces/*.md
+        - runtime/frontend-interfaces/generative-ui-spectrum/*.md
+        - runtime/frontend-interfaces/patterns/*.md
         - visual-builder/*.md
         - deploy/*.md
         - observability/*.md
@@ -328,11 +330,21 @@ nav:
       - API Server: runtime/api-server.md
       - Frontend Interfaces:
         - runtime/frontend-interfaces/index.md
-        - Generative UI spectrum: runtime/frontend-interfaces/generative-ui-spectrum.md
+        - Generative UI spectrum:
+          - runtime/frontend-interfaces/generative-ui-spectrum/index.md
+          - Controlled generative UI: runtime/frontend-interfaces/generative-ui-spectrum/controlled-generative-ui.md
+          - Declarative generative UI with A2UI: runtime/frontend-interfaces/generative-ui-spectrum/declarative-generative-ui-a2ui.md
+          - Open generative UI: runtime/frontend-interfaces/generative-ui-spectrum/open-generative-ui.md
+          - MCP Apps: runtime/frontend-interfaces/generative-ui-spectrum/mcp-apps.md
         - Custom ADK APIs: runtime/frontend-interfaces/custom-frontends.md
         - AG-UI: integrations/ag-ui.md
         - A2UI: integrations/a2ui.md
-        - Frontend patterns: runtime/frontend-interfaces/patterns.md
+        - Frontend patterns:
+          - runtime/frontend-interfaces/patterns.md
+          - Tool rendering: runtime/frontend-interfaces/patterns/tool-rendering.md
+          - Frontend tools and context: runtime/frontend-interfaces/patterns/frontend-tools-and-context.md
+          - Shared state: runtime/frontend-interfaces/patterns/shared-state.md
+          - Human-in-the-loop: runtime/frontend-interfaces/patterns/human-in-the-loop.md
       - Ambient Agents: runtime/ambient-agents.md
       - Resume Agents: runtime/resume.md
       - Cancel Agent Runs: runtime/cancel.md
