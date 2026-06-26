@@ -1,42 +1,43 @@
 ---
 catalog_title: A2UI
-catalog_description: Generate rich, structured UIs from your agents using the Agent-to-UI protocol
+catalog_description: Agent-to-User Interface specification for declarative generative UI
 catalog_icon: /integrations/assets/a2ui.svg
 ---
 
 # A2UI - declarative generative UI for ADK
 
-A2UI is a declarative generative UI spec. Instead of returning only text, an ADK
-agent can assemble a UI from a catalog of approved components: cards, forms,
-charts, tables, buttons, and domain-specific views. The agent outputs
-declarative JSON, and a renderer on the client turns it into approved
-application UI.
+A2UI is the visual language for declarative generative UI. Instead of returning
+only text, an ADK agent can assemble UI widgets from a catalog of approved
+components: cards, forms, charts, tables, buttons, and domain-specific views.
+The agent outputs declarative JSON descriptors, and a renderer on the client
+turns them into approved application UI.
 
-It's transport-agnostic: A2UI payloads work over A2A, MCP, REST, WebSockets,
-AG-UI, or any other protocol. A2UI describes *what* to render; the client and
-its renderer decide *how* to render it.
+It's transport-agnostic: A2UI payloads can be carried over A2A, MCP, REST,
+WebSockets, AG-UI, or another stream with the needed payload context. A2UI
+describes *what* to render; the client and its renderer decide *how* to render
+it.
 
 !!! tip "A2UI and frontend protocols"
-    A2UI is a transport-agnostic declarative UI contract. It answers what UI the
-    agent wants to show, not how the full conversation stream is delivered. Pair
-    A2UI with [AG-UI](/integrations/ag-ui/) when your ADK app also needs
-    bidirectional streaming messages, agent activity, tool calls, state sync,
-    lifecycle events, frontend actions, or human-in-the-loop flows. See
-    [Frontend interfaces](/runtime/frontend-interfaces/) for the full ADK
-    frontend map.
+    A2UI describes what to render. AG-UI carries the surrounding conversation
+    stream: messages, activity, tool calls, state sync, lifecycle events,
+    frontend actions, and human-in-the-loop flows. See
+    [Frontend interfaces](/runtime/frontend-interfaces/) for the ADK frontend
+    map.
 
 ## What A2UI owns
 
 | Layer | Responsibility |
 |---|---|
-| Component catalog | The approved components the agent may use, including descriptions, prop schemas, examples, and renderer mappings. |
+| Component catalog | The approved components the agent may use, including descriptions, prop schemas, examples, and renderer mappings. The client renders only these trusted components, not arbitrary generated code. |
+| Declarative UI messages | The JSON/JSONL-style payloads that describe which approved widgets to render and how they fit together. |
 | Agent prompt | The schema and examples that teach the model how to assemble valid A2UI messages. |
 | Validation | The boundary that treats generated UI as untrusted until it matches the selected catalog and protocol version. |
 | Renderer | The client-side implementation that maps A2UI descriptors to native UI in your design system. |
 
-AG-UI, A2A, REST, MCP, or a custom stream can carry the validated payload. A2UI
-does not replace the ADK Runtime, your session model, or the frontend event
-protocol.
+AG-UI, A2A, REST, MCP, or a custom stream can carry the validated payload when
+they preserve payload metadata, ordering, versioning, and client capabilities.
+A2UI does not replace the ADK Runtime, your session model, or the frontend
+event protocol.
 
 ## ADK quickstart
 
@@ -234,7 +235,7 @@ uses: A2A, AG-UI, REST, Server-Sent Events, or a custom ADK API adapter.
 
 ## Backend implementation notes
 
-The live side-by-side A2UI example is in
+The code-plus-live-demo A2UI walkthrough is in
 [Declarative generative UI with A2UI](/runtime/frontend-interfaces/patterns/declarative-generative-ui-a2ui/).
 The sections below are backend reference snippets for catalog selection,
 catalog configuration, and capability advertisement.

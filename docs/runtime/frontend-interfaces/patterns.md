@@ -7,28 +7,29 @@ hide:
 
 ADK agents can power many kinds of user interfaces. Start by choosing the
 runtime contract, then choose the specific UI pattern your product needs.
+AG-UI is the interaction transport; A2UI is the declarative visual language.
 
-[AG-UI](/integrations/ag-ui/) is the production-oriented event protocol path for
-application UIs. It can carry agent activity, reasoning, tool calls, frontend
-actions, shared state, human review, and the full generative UI spectrum.
+[AG-UI](/integrations/ag-ui/) carries agent activity, reasoning, tool calls,
+frontend actions, shared state, human review, and UI specifications such as
+A2UI.
 
 !!! note "Current runnable examples"
 
     The examples use a CopilotKit AG-UI frontend backed by Google ADK agents.
-    Use them to study frontend behavior, then decide whether your ADK app should
-    expose raw ADK APIs, AG-UI, A2UI payloads, or a custom stream.
+    Use them to study frontend behavior, choose the transport or client
+    contract first, then decide whether that stream carries A2UI payloads.
 
 ## Choose the layer first
 
 | Layer | Use it when | What it owns |
 |---|---|---|
 | ADK Runtime | You are building, running, and deploying agents. | Agent execution, sessions, tools, and runtime events. |
+| AG-UI | Your application needs streaming messages, tool rendering, frontend tools, shared state, UI specifications, or human approval flows. | The recommended event-based, transport-agnostic pipe between agent backends and frontend surfaces. |
 | Custom ADK frontend client | You need a product-specific SDK or want to map `/run_sse` yourself. | Raw event consumption, state mapping, retries, and client contract design. |
-| AG-UI | Your application needs streaming messages, tool rendering, frontend tools, shared state, generative UI, or human approval flows. | A stable client-facing event protocol across web, mobile, chat, and other frontend surfaces. |
-| A2UI | The agent should return a portable structured UI payload assembled from trusted components. | A declarative component payload that can travel through AG-UI, A2A, MCP, REST, or another stream. |
+| A2UI | The agent should return portable UI widgets assembled from trusted components. | The visual language: declarative UI payloads carried by AG-UI or another stream with the needed payload and capability context. |
 | Frontend frameworks and channels | You are rendering the final user experience. | React, Vue, React Native, Flutter, Slack, Microsoft Teams, or another client surface. |
 
-## Generative UI spectrum
+## Generative UI patterns
 
 | Pattern | Use it when |
 |---|---|
@@ -36,7 +37,8 @@ actions, shared state, human review, and the full generative UI spectrum.
 | [Declarative generative UI with A2UI](patterns/declarative-generative-ui-a2ui.md) | The agent assembles trusted catalog components into a UI payload. |
 | [Open generative UI](patterns/open-generative-ui.md) | The agent or tool needs a richer surface than fixed components or a catalog. |
 | [MCP Apps](patterns/mcp-apps.md) | The frontend hosts app-capable tool surfaces from MCP servers. |
-| [Generative UI spectrum](patterns/generative-ui-spectrum.md) | Compare the control model across those four patterns. |
+
+[:octicons-arrow-right-24: Compare the generative UI spectrum](patterns/generative-ui-spectrum.md)
 
 ## Interaction patterns
 
@@ -49,9 +51,9 @@ actions, shared state, human review, and the full generative UI spectrum.
 
 ## A2UI with AG-UI
 
-A2UI defines the declarative UI contract: what catalog-backed surface the agent
-wants the client to render. AG-UI carries the live interaction stream between
-the agent backend and the application UI.
+A2UI defines the declarative visual language: what catalog-backed surface the
+agent wants the client to render. AG-UI carries that UI specification inside
+the live interaction stream between the agent backend and the application UI.
 
 Use them together when the ADK agent should generate structured UI and the
 application still needs messages, agent activity, reasoning, tools, state,

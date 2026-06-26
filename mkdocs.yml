@@ -329,9 +329,11 @@ nav:
       - API Server: runtime/api-server.md
       - Frontend Interfaces:
         - runtime/frontend-interfaces/index.md
-        - Custom ADK APIs: runtime/frontend-interfaces/custom-frontends.md
-        - AG-UI: integrations/ag-ui.md
-        - A2UI: integrations/a2ui.md
+        - Frontend transports:
+          - AG-UI: integrations/ag-ui.md
+          - Custom ADK APIs: runtime/frontend-interfaces/custom-frontends.md
+        - Visual language:
+          - A2UI: integrations/a2ui.md
         - Frontend patterns:
           - Overview: runtime/frontend-interfaces/patterns.md
           - Controlled generative UI: runtime/frontend-interfaces/patterns/controlled-generative-ui.md

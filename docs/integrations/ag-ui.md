@@ -1,21 +1,17 @@
 ---
 catalog_title: AG-UI
-catalog_description: Build interactive chat UIs with streaming, state sync, and agentic actions
+catalog_description: Agent-User Interaction transport for application frontends
 catalog_icon: /integrations/assets/ag-ui.png
 ---
 
 # AG-UI protocol for ADK frontends
 
 Connect your ADK agents to full-featured applications with rich, responsive UIs.
-[AG-UI](https://docs.ag-ui.com/) is an open protocol for the live
-agent-frontend loop: streaming events, client state, tool calls, frontend
-actions, generative UI, human review, and bidirectional communication between
-agents and application frontends.
+[AG-UI](https://docs.ag-ui.com/) is the transport layer for the live
+agent-frontend loop. It is an event-based, transport-agnostic Agent-User
+Interaction protocol that connects agent backends with application frontends.
 
-[AG-UI](https://github.com/ag-ui-protocol/ag-ui) provides a consistent interface
-to empower rich clients across technology stacks, from mobile to the web and
-even the command line. There are a number of different clients that support
-AG-UI:
+AG-UI clients exist across React, Kotlin, Java, Go, and command-line surfaces:
 
 - [CopilotKit](https://copilotkit.ai) provides tooling and components to tightly
   integrate your agent with web applications
@@ -30,17 +26,17 @@ AG-UI:
 ## Where AG-UI fits
 
 ADK Runtime events are the source of truth for an agent run. AG-UI adapts those
-events into a stable client-facing protocol for application frontends. Use
+events into the client-facing interaction pipe for application frontends. Use
 AG-UI when your UI needs more than a single text response: streaming messages,
 agent activity, reasoning, tool-call rendering, shared state, frontend tools,
-human approvals, or generative UI.
+human approvals, or UI specifications such as A2UI.
 
 The layers are:
 
 ```text
 ADK agent and Runtime events
   -> ADK-to-AG-UI adapter
-  -> AG-UI client-facing event protocol
+  -> AG-UI transport layer
   -> Client implementation, such as CopilotKit
   -> Application UI
 ```
@@ -94,24 +90,24 @@ shown on its own page beside an embedded ADK-backed showcase.
 
 ## A2UI with AG-UI
 
-A2UI and AG-UI operate at different layers. A2UI defines a declarative UI
-contract: the agent assembles catalog-backed components, and the frontend
-renderer turns them into native application UI. AG-UI carries that contract
-inside the broader interaction stream, alongside messages, agent activity,
-reasoning, tool calls, state, frontend tools, human-in-the-loop events,
-lifecycle events, and user responses.
+A2UI and AG-UI operate at different layers. A2UI is the visual language: the
+agent assembles catalog-backed components, and the frontend renderer turns them
+into native application UI. AG-UI is the transport layer that carries those UI
+specifications inside the broader interaction stream, alongside messages, agent
+activity, reasoning, tool calls, state, frontend tools, human-in-the-loop
+events, lifecycle events, and user responses.
 
 Use them together when an ADK app needs declarative generative UI and a full
 bidirectional frontend protocol:
 
 ```text
 ADK agent logic
-  -> A2UI declarative UI contract
-  -> AG-UI interaction stream
+  -> AG-UI interaction transport
+       carries messages, state, tools, activity, and A2UI specifications
   -> Web, mobile, chat, or custom frontend renderer
 ```
 
-Use A2UI for the UI shape. Use AG-UI for the live agent-user channel.
+Use A2UI for the UI shape. Use AG-UI for the live agent-user transport.
 
 ## Resources
 
